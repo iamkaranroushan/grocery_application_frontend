@@ -1,11 +1,13 @@
 import Layout from '@/components/custom/layout'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const AboutPage = () => {
     return (
-        <Layout>
-            <div>AboutPage</div>
-        </Layout>
+        <Suspense fallback={<div>Loading layout...</div>}>
+            <Layout>
+                <div>AboutPage</div>
+            </Layout>
+        </Suspense>
     )
 }
 

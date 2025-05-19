@@ -1,9 +1,11 @@
 import AdminOrdersPage from '@/components/admin/adminOrderPage'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 const AdminOrders = () => {
   return (
-    <div ><AdminOrdersPage /></div>
+    <Suspense fallback={<div>Loading layout...</div>}>
+      <div ><AdminOrdersPage /></div>
+    </Suspense>
   )
 }
 

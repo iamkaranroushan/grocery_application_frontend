@@ -1,6 +1,7 @@
 import { Comfortaa, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
+import { Suspense } from "react";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,8 +29,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${comfortaa.variable} ${geistMono.variable} antialiased`}
       >
-        <Toaster position="top-right" />
-        {children}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Toaster position="top-right" />
+          {children}
+        </Suspense>
       </body>
     </html>
   );
