@@ -15,7 +15,8 @@ const useSocket = () => {
 
             const socketUrl =
                 "http://192.168.1.3:8000" ||
-                "http://localhost:8000";
+                "http://localhost:8000" ||
+                "https://grocery-application-backend-1.onrender.com";
             const newSocket = io(socketUrl, {
                 auth: {
                     token: token,
