@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 
 const useUpdateOrderStatus = () => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+  const API_URL = process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -22,7 +22,9 @@ const useUpdateOrderStatus = () => {
           }
         `,
         variables: { id, status, deliveryDate },
-      });
+      },
+      { headers: { 'Content-Type': 'application/json' }, withCredentials: true,}
+    );
 
       if (response.data.errors) {
         throw new Error(response.data.errors[0].message);

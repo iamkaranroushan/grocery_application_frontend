@@ -5,7 +5,7 @@ import axios from "axios";
 
 const useCreateAddress = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
@@ -22,7 +22,6 @@ const useCreateAddress = () => {
       city,
       state,
       postalCode,
-      phoneNumber,
     } = addressDetails;
 
     try {
@@ -32,14 +31,12 @@ const useCreateAddress = () => {
           query: `
             mutation {
               createAddress(input: {
-            
                 userId: ${userId},
                 streetAddress: "${streetAddress}",
                 landmark: "${landmark}",
                 city: "${city}",
                 state: "${state}",
                 postalCode: "${postalCode}",
-                phoneNumber: "${phoneNumber}"
               }) {
                 id
                 streetAddress
@@ -47,7 +44,6 @@ const useCreateAddress = () => {
                 state
                 city
                 zipCode
-                phoneNumber
               }
             }
           `,

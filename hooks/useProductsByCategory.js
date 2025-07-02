@@ -3,7 +3,7 @@ import axios from "axios";
 
 const useProductsByCategory = ({ categoryId }) => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ const useProductsByCategory = ({ categoryId }) => {
     if (!categoryId) {
       console.log("No categoryId provided, skipping fetch.");
       return;
-    }else{
+    } else {
       console.log(" fetching products for categoryId:", categoryId);
     }
 
@@ -35,7 +35,8 @@ const useProductsByCategory = ({ categoryId }) => {
                   productId
                   weight
                   price
-                  stock
+                  mrp
+                  inStock
                   product{
                     id
                     name
@@ -47,20 +48,23 @@ const useProductsByCategory = ({ categoryId }) => {
           `,
           variables: { categoryId: parseInt(categoryId) },
         },
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" }, withCredentials: true }
+
       );
 
-      console.log("GraphQL Response:", response.data.data.products[0].variants[0].productId);
+      // console.log("GraphQL Response:", response.data.data.products[0].variants[0].productId);
 
       const fetchedProducts = response.data.data?.products || [];
-      if (fetchedProducts.length === 0) {
-        console.log("No products found for categoryId:", categoryId);
-      }
-
+      console.log(
+        fetchedProducts.length > 0
+          ? `Fetched ${fetchedProducts.length} products for categoryId ${categoryId}`
+          : `No products found for categoryId ${categoryId}`
+      );
       setProducts(fetchedProducts);
+      setError(null);
     } catch (err) {
       console.error("Error fetching products:", err.message);
-      setError(err.message);
+      setError("Something went wrong while fetching products.");
     } finally {
       setLoading(false);
     }

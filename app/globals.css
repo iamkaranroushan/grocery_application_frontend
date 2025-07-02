@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-comfortaa);
+  font-family: var(--font-manrope);
 }
 
 @layer utilities {

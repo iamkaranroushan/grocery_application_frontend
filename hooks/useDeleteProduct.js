@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const useDeleteProduct = () => {
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -26,11 +26,7 @@ const useDeleteProduct = () => {
           `,
                     variables: { id: productId },
                 },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
             );
 
             const result = response.data.data.deleteProduct;
@@ -38,7 +34,7 @@ const useDeleteProduct = () => {
                 setError(result.error);
                 console.error("❌ Delete failed:", result.error);
             }
-            
+
             console.log(" Delete success:", result.success);
             return result.success;
         } catch (err) {
@@ -48,7 +44,7 @@ const useDeleteProduct = () => {
         } finally {
             setLoading(false);
         }
-        
+
     };
 
     return { deleteProduct, loading, error };

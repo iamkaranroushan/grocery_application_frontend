@@ -18,6 +18,8 @@ const user = () => {
   const router = useRouter();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const token = useSelector((state) => state.auth.token); // Access the token from Redux store
   const id = useSelector((state) => state.auth.id);
 
@@ -32,7 +34,6 @@ const user = () => {
   useEffect(() => {
     setLoading(false); // Cleanup timer when the effect re-runs
   }, [pathname, searchParams]);
-
 
   // Access the token from Redux store
   const handleLoginClick = () => {

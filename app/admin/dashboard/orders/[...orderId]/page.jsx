@@ -6,20 +6,19 @@ import useFetchOrderById from "@/hooks/useFetchOrdersById";
 import useUpdateOrderStatus from "@/hooks/useUpdateOrderStatus";
 import { Button } from "@/components/ui/button";
 import useSocket from "@/hooks/useSocket";
+import { useSelector } from "react-redux";
 
 const OrderDetailsPage = () => {
-    
+    const {phoneNumber} = useSelector((state) => state.auth);
     const socket = useSocket()
     const { orderId } = useParams();
     const { refetch, order, loading, error } = useFetchOrderById(orderId);
     const { updateStatus, loading: updating, error: updateError } = useUpdateOrderStatus();
-
     const [status, setStatus] = useState("");
     const [userId, setUserId] = useState("");
     const [deliveryDate, setDeliveryDate] = useState("");
 
 
-  
     useEffect(() => {
         if (order) {
             setStatus(order.status);
@@ -109,7 +108,7 @@ const OrderDetailsPage = () => {
                     <div>
                         <p className="font-medium mb-1">Customer Info</p>
                         <p><strong>Name:</strong> {order.user?.username || "N/A"}</p>
-                        <p><strong>Phone:</strong> {order.shippingAddress?.phoneNumber || "N/A"}</p>
+                        <p><strong>Phone:</strong> {phoneNumber || "N/A"}</p>
                     </div>
                     <div>
                         <p className="font-medium mb-1">Shipping Address</p>

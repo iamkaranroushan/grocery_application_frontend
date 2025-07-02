@@ -3,8 +3,7 @@ import axios from 'axios';
 
 const useUpdateCategory = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK ||
-    process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -27,7 +26,7 @@ const useUpdateCategory = () => {
           `,
           variables: { categoryId: parseInt(categoryId), newName },
         },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true,}
       );
 
       const result = response.data?.data?.updateCategory;

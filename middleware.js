@@ -1,33 +1,50 @@
 import { NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
 
 const protectedRoutes = {
     admin: ['/admin', '/admin/edit', '/admin/dashboard'],
-    customer: ['/user', '/cart', '/orders', '/checkout', '/categories'],
+    customer: ['/user', '/cart', '/orders', '/checkout'],
 }
 
-export function middleware(request) {
-    const { pathname } = request.nextUrl
-    const roleCookie = request.cookies.get('role')
-    const role = roleCookie?.value
 
-    if (!role) {
+// Get secret key as a Uint8Array
+const getJwtSecretKey = () => {
+    const secret = process.env.JWT_SECRET
+    if (!secret) throw new Error('Missing JWT_SECRET env variable')
+    return new TextEncoder().encode(secret)
+}
+
+export async function middleware(request) {
+    const { pathname } = request.nextUrl
+    const jwtToken = request.cookies.get('jwtToken')?.value
+
+    if (!jwtToken) {
+        console.log('[Middleware] No jwtToken found')
         return NextResponse.next()
     }
 
-    // 🔐 Admins can't access customer routes
-    if (
-        role === 'admin' &&
-        protectedRoutes.customer.some(route => pathname.startsWith(route))
-    ) {
-        return NextResponse.redirect(new URL('/', request.url)) // redirect to homepage
-    }
+    try {
+        const { payload } = await jwtVerify(jwtToken, getJwtSecretKey())
+        const role = payload.role
+        console.log('[Middleware] Role from token:', role)
 
-    // 🔐 Customers can't access admin routes
-    if (
-        role === 'customer' &&
-        protectedRoutes.admin.some(route => pathname.startsWith(route))
-    ) {
-        return NextResponse.redirect(new URL('/', request.url)) // redirect to homepage
+        if (
+            role === 'admin' &&
+            protectedRoutes.customer.some(route => pathname.startsWith(route))
+        ) {
+            console.log("going to :", request.url , "not allowed as you are a", role)
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+
+        if (
+            role === 'customer' &&
+            protectedRoutes.admin.some(route => pathname.startsWith(route))
+        ) {
+            console.log("going to :", request.url, "not allowed as you are a", role)
+            return NextResponse.redirect(new URL('/', request.url))
+        }
+    } catch (err) {
+        console.error('[Middleware] JWT verification failed, returning to homepage.', err.message)
     }
 
     return NextResponse.next()
@@ -40,7 +57,5 @@ export const config = {
         '/cart',
         '/orders',
         '/checkout',
-        '/categories/:path*',
-        
     ],
 }

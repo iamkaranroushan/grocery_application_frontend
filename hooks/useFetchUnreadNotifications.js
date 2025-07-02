@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const useFetchUnreadNotifications = (recipientId) => {
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
@@ -28,7 +28,7 @@ const useFetchUnreadNotifications = (recipientId) => {
           `,
                     variables: { recipientId },
                 },
-                { headers: { 'Content-Type': 'application/json' } }
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
             );
 
             if (response.data.errors) throw new Error(response.data.errors[0].message);

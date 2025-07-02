@@ -1,70 +1,63 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import LoadingSpinner from "./loadingSpinner";
+import React, { useEffect, useRef } from "react";
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
+import Image from "next/image";
 
 const HeroCard = () => {
-  const phrases = ["Organic Fruits", "Authentic Spices", "Fresh Vegetables", "Crunchy Cookies"];
-  const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(true);
-  const [categoryLoading, setCategoryLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const sliderInstanceRef = useRef(null); // holds the slider instance
 
-  const routeChange = (url) => {
-    const currentUrl = window.location.pathname + window.location.search;
-    if (url !== currentUrl) {
-      setLoading(true);
-      console.log(url);
-      router.push(url, { scroll: false });
+  const [sliderRef] = useKeenSlider(
+    {
+      loop: true,
+      slides: { perView: 1 },
+      created: (slider) => {
+        sliderInstanceRef.current = slider;
+      },
     }
-  };
-  useEffect(() => {
-    setLoading(false); // Cleanup timer when the effect re-runs
-  }, [pathname, searchParams]);
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setFade(false);
-      setTimeout(() => {
-        setIndex((prev) => (prev + 1) % phrases.length);
-        setFade(true);
-      }, 400); // fade out time
-    }, 2000); // interval between phrases
+      if (
+        document.visibilityState === "visible" &&
+        sliderInstanceRef.current
+      ) {
+        sliderInstanceRef.current.next();
+      }
+    }, 3000);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <>
-      {loading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-80 ">
-          <LoadingSpinner />
-        </div>
-      )}
-      <div className={`w-screen mt-2 p-3  flex flex-col justify-end items-center bg-white`}>
-
-
-        < div className="flex flex-col z-10 w-full max-w-md text-center py-2">
-          <h1
-            className={`text-stone-800 text-6xl font-bold transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"
-              }`}
+    <div className="flex flex-col justify-center items-center bg-white">
+      <div
+        ref={sliderRef}
+        className="keen-slider relative w-full h-[30vh] lg:h-[60vh] rounded-3xl overflow-hidden"
+      >
+        {[
+          "/bath-essentials.jpg",
+          "/clothings.jpg",
+          "/ladiespurse.jpg",
+          "/lemons.jpg",
+        ].map((src, i) => (
+          <div
+            key={i}
+            className="keen-slider__slide flex justify-center items-center relative"
           >
-            {phrases[index]}
-          </h1>
-          <br />
-
-          <Button onClick={() => routeChange('/categories')} variant="hero_button" size="subscribe" className="w-full">
-            shop from categories
-          </Button>
-
-        </div>
-      </div >
-    </>
+            <Image
+              src={src}
+              alt={`Slide ${i}`}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority={i === 0}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

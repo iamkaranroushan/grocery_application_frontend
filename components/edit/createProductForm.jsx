@@ -7,14 +7,14 @@ import uploadImageToCloudinary from '@/lib/uploadImageToCloudinary';
 import { IoAdd, IoRemove } from 'react-icons/io5';
 import useProductsByCategory from '@/hooks/useProductsByCategory';
 
-const CreateProductForm = ({ subcategoryId, onCreateProduct}) => {
+const CreateProductForm = ({ subcategoryId, onCreateProduct }) => {
     const fileInputRef = useRef(null);
-    const { refetch } = useProductsByCategory({ categoryId:subcategoryId });
+    const { refetch } = useProductsByCategory({ categoryId: subcategoryId });
     const [imageUrl, setImageUrl] = useState('');
     const [uploading, setUploading] = useState(false);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
-    const [variants, setVariants] = useState([{ weight: '', price: '', stock: '' }]);
+    const [variants, setVariants] = useState([{ weight: '', price: '', mrp: '', inStock: true }]);
 
     const { createProduct, loading } = useCreateProduct(refetch);
 
@@ -39,8 +39,8 @@ const CreateProductForm = ({ subcategoryId, onCreateProduct}) => {
         setVariants(updated);
     };
 
-    const addVariant = () => setVariants([...variants, { weight: '', price: '', stock: '' }]);
-    
+    const addVariant = () => setVariants([...variants, { weight: '', price: '', mrp: '', inStock: true }]);
+
     const removeVariant = (index) => {
         if (variants.length === 1) return;
         setVariants(variants.filter((_, i) => i !== index));
@@ -58,19 +58,20 @@ const CreateProductForm = ({ subcategoryId, onCreateProduct}) => {
             variants: variants.map((v) => ({
                 weight: v.weight,
                 price: parseFloat(v.price),
-                stock: parseInt(v.stock),
+                mrp: parseFloat(v.mrp),
+                inStock: Boolean(v.inStock),
             })),
         };
 
         const result = await createProduct(payload);
 
-       
+
 
         if (result) {
             setName('');
             setDescription('');
             setImageUrl('');
-            setVariants([{ weight: '', price: '', stock: '' }]);
+            setVariants([{ weight: '', price: '',mrp:'', inStock:true }]);
             if (onCreateProduct) onCreateProduct(result);
         }
 
@@ -148,20 +149,28 @@ const CreateProductForm = ({ subcategoryId, onCreateProduct}) => {
                         />
                         <input
                             type='number'
+                            placeholder='MRP'
+                            className='placeholder:text-sm border w-full p-2 rounded-md'
+                            value={variant.mrp}
+                            onChange={(e) => handleVariantChange(idx, 'mrp', e.target.value)}
+                            required
+                        />
+                        <input
+                            type='number'
                             placeholder='Price'
                             className='placeholder:text-sm border w-full p-2 rounded-md'
                             value={variant.price}
                             onChange={(e) => handleVariantChange(idx, 'price', e.target.value)}
                             required
                         />
-                        <input
-                            type='number'
-                            placeholder='Stock'
-                            className=' placeholder:text-sm border w-full p-2 rounded-md'
-                            value={variant.stock}
-                            onChange={(e) => handleVariantChange(idx, 'stock', e.target.value)}
-                            required
-                        />
+                        <label className='flex items-center gap-2 text-sm text-muted-foreground'>
+                            <input
+                                type='checkbox'
+                                checked={variant.inStock}
+                                onChange={(e) => handleVariantChange(idx, 'inStock', e.target.checked)}
+                            />
+                            In Stock
+                        </label>
 
                     </div>
                 ))}

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaMinus, FaRupeeSign } from "react-icons/fa";
 import { Button } from "../ui/button";
 import useCartAction from "@/hooks/useCartAction";
 import useDeleteCartItem from "@/hooks/useDeleteCartItem";
 import CartItemDeleteModal from "./cartItemDeleteModal";
-// Import the modal component
+import { MdDelete } from "react-icons/md";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { TbMinus, TbMoodMinus } from "react-icons/tb";
+import { IoAddOutline } from "react-icons/io5";
 
 const CartProductCard = ({ token, product, setIsLoginOpen, refetchCartItems }) => {
     const [quantity, setQuantity] = useState(product?.quantity || 0);
@@ -18,26 +21,26 @@ const CartProductCard = ({ token, product, setIsLoginOpen, refetchCartItems }) =
     const { updatedQuantity, updateQuantity, loading } = useCartAction();
     const { deleteCartItem } = useDeleteCartItem();
 
-    const [isModalOpen, setIsModalOpen] = useState(false); // Modal open/close state
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleIncrease = async () => {
         await updateQuantity({ cartItemId: product.id, newQuantity: 1 });
-        setQuantity(prev => prev + 1);
+        setQuantity((prev) => prev + 1);
     };
 
     const handleDecrease = async () => {
         if (quantity === 1) {
-            setIsModalOpen(true); // Open the modal for confirmation
+            setIsModalOpen(true);
         } else {
             await updateQuantity({ cartItemId: product.id, newQuantity: -1 });
-            setQuantity(prev => prev - 1);
+            setQuantity((prev) => prev - 1);
         }
     };
 
     const handleRemove = async () => {
         await deleteCartItem(product.id);
         await refetchCartItems?.();
-        setIsModalOpen(false); // Close the modal after item is removed
+        setIsModalOpen(false);
     };
 
     useEffect(() => {
@@ -47,49 +50,83 @@ const CartProductCard = ({ token, product, setIsLoginOpen, refetchCartItems }) =
     }, [updatedQuantity]);
 
     return (
-        <div className="border rounded-md p-4 bg-white flex gap-4 w-full max-w-3xl shadow-sm">
+        <div className="w-full max-w-4xl border-b border-gray-200 py-6  flex  gap-6 group  ">
             {/* Product Image */}
-            <div className="relative w-28 h-28 shrink-0 border rounded-md overflow-hidden">
+            <div className="relative w-40 h-40 bg-gray-100 rounded-md overflow-hidden">
                 <Image
                     src={imageUrl}
                     alt={productName}
                     layout="fill"
                     objectFit="cover"
-                    className="rounded-md"
+                    className="object-contain"
                 />
             </div>
 
             {/* Product Info */}
-            <div className="flex flex-col justify-between flex-1">
-                <div className="space-y-1">
-                    <h2 className="text-sm font-medium text-gray-800">{productName}</h2>
-                    <p className="text-xs text-gray-500">{description}</p>
-                    <span className="text-xs text-gray-600 font-semibold bg-gray-100 px-2 py-0.5 rounded">
+            <div className="flex-1 flex flex-col justify-between gap-2 w-full">
+                <div className="flex flex-col gap-1">
+                    <h2 className="text-[16px] lg:text-lg font-semibold text-gray-900">{productName}</h2>
+                    <p className="text-[14px] lg:text-[15px] font-semibold  text-stone-600">{description}</p>
+                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-2 rounded w-fit">
                         {weight}
                     </span>
                 </div>
 
-                {/* Price & Actions */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mt-3">
-                    <div className="flex items-center gap-1 text-gray-800 text-sm font-semibold">
-                        <FaRupeeSign className="text-xs" />
-                        <span>{price * quantity}</span>
+                {/* Price + Quantity */}
+                <div className="flex flex-col lg:flex-row lg:items-center items-start justify-between gap-4">
+
+                    {/* Price */}
+                    <div className="flex items-center gap-1 font-semibold text-gray-900">
+                    <span className="text-[15px] lg:text-lg font-semibold">MRP :</span>    
+                    <FaRupeeSign className="text-sm lg:text-lg" />
+                        <span className="lg:text-lg">{price * quantity}</span>
+                    </div>
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-2">
+                        {quantity === 1 ? (
+                            <Button
+                                onClick={() => setIsModalOpen(true)}
+                                size="icon"
+                                variant="outline"
+                                className="rounded-full border-gray-300"
+                                title="Remove item"
+                            >
+                                <RiDeleteBin6Line className="icons" />
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleDecrease}
+                                size="icon"
+                                variant="outline"
+                                className="rounded-full border-gray-300"
+                                title="Decrease quantity"
+                            >
+                                <TbMinus className="icons" />
+                            </Button>
+                        )}
+                        <span className="text-base font-medium">{quantity}</span>
+                        <Button
+                            onClick={handleIncrease}
+                            size="icon"
+                            variant="outline"
+                            className="rounded-full border-gray-300"
+                        >
+                            <IoAddOutline className="icons" />
+                        </Button>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <Button onClick={handleIncrease} variant="increase" size="quantity">+</Button>
-                        <span className="text-sm font-medium">{quantity}</span>
-                        <Button onClick={handleDecrease} variant="decrease" size="quantity">-</Button>
-                        <Button onClick={() => setIsModalOpen(true)} variant="delete" size="sm">Remove</Button>
-                    </div>
+
                 </div>
+
+                {/* Remove link */}
+
             </div>
 
-            {/* Cart Item Delete Modal */}
+            {/* Modal */}
             <CartItemDeleteModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)} // Close the modal
-                onConfirm={handleRemove} // Confirm the deletion
+                onClose={() => setIsModalOpen(false)}
+                onConfirm={handleRemove}
             />
         </div>
     );

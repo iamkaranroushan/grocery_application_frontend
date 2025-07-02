@@ -19,7 +19,8 @@ const UpdateProductForm = ({ product, handleUpdateSuccess }) => {
             id: v.id,
             weight: v.weight,
             price: v.price,
-            stock: v.stock
+            mrp: v.mrp || '',
+            inStock: v.inStock ?? true,
         })) || []
     );
     const [deletedVariantIds, setDeletedVariantIds] = useState([]);
@@ -40,16 +41,16 @@ const UpdateProductForm = ({ product, handleUpdateSuccess }) => {
 
     const handleVariantChange = (index, field, value) => {
         const updated = [...variants];
-        updated[index][field] = value;
+        updated[index][field] = field === 'inStock' ? value : value;
         setVariants(updated);
     };
 
     const addVariant = () => {
-        setVariants([...variants, { weight: '', price: '', stock: '' }]);
+        setVariants([...variants, { weight: '', price: '', mrp: '', inStock: true }]);
     };
 
     const removeVariant = (index) => {
-        if (variants.length === 1) return; // Don't remove the last one
+        if (variants.length === 1) return;
 
         const toRemove = variants[index];
         if (toRemove.id) {
@@ -71,9 +72,10 @@ const UpdateProductForm = ({ product, handleUpdateSuccess }) => {
                 id: v.id,
                 weight: v.weight,
                 price: parseFloat(v.price),
-                stock: parseInt(v.stock)
+                mrp: parseFloat(v.mrp),
+                inStock: Boolean(v.inStock),
             })),
-            deletedVariantIds
+            deletedVariantIds,
         };
 
         const result = await updateProduct(product.id, input);
@@ -159,12 +161,20 @@ const UpdateProductForm = ({ product, handleUpdateSuccess }) => {
                         />
                         <input
                             type='number'
-                            placeholder='Stock'
+                            placeholder='MRP'
                             className='placeholder:text-sm text-sm border w-full p-2 rounded-md'
-                            value={variant.stock}
-                            onChange={(e) => handleVariantChange(idx, 'stock', e.target.value)}
+                            value={variant.mrp}
+                            onChange={(e) => handleVariantChange(idx, 'mrp', e.target.value)}
                             required
                         />
+                        <label className='flex items-center gap-2 text-sm text-muted-foreground'>
+                            <input
+                                type='checkbox'
+                                checked={variant.inStock}
+                                onChange={(e) => handleVariantChange(idx, 'inStock', e.target.checked)}
+                            />
+                            In Stock
+                        </label>
                     </div>
                 ))}
             </div>

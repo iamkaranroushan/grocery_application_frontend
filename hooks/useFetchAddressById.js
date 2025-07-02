@@ -7,7 +7,7 @@ const useFetchAddressById = () => {
     const [error, setError] = useState(null);
     const [addresses, setAddresses] = useState([]);
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
     const fetchAddressesByUser = async (userId) => {
         console.log(userId)
@@ -33,7 +33,6 @@ const useFetchAddressById = () => {
                         state
                         country
                         zipCode
-                        phoneNumber
                         
                     }
                     }

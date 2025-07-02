@@ -45,7 +45,7 @@ const ProductLayout = ({ children }) => {
               <p>Loading cart items ...</p>
             </div>
           ) : (
-            <main className="flex-grow justify-center w-screen py-2 mb-6">
+            <main className="flex-grow justify-center w-full my-10 py-2">
               {children}
             </main>)
           }

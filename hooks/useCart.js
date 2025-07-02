@@ -5,7 +5,7 @@ import axios from "axios";
 
 const useCart = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
   const cartId = useSelector((state) => state.auth.cartId);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,11 +46,7 @@ const useCart = () => {
           `,
           variables: { cartId: parseInt(cartId) },
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
       );
 
       setCartItems(response.data.data.cart.cart?.cartItems || []);

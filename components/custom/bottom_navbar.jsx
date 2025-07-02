@@ -8,13 +8,13 @@ import { useSelector } from "react-redux";
 import { LuUserRound } from "react-icons/lu";
 import { FaRegEdit } from "react-icons/fa";
 
-export const Bottom_navbar = ({ routeChange }) => {
+export const Bottom_navbar = ({ routeChange , className }) => {
   const { role } = useSelector((state) => state.auth); // Get the role from auth store
   const pathname = usePathname();
   const isActive = (path) => pathname === path;
 
   return (
-    <div className="fixed bg-white bottom-0 w-screen flex justify-around items-center p-4 border-t">
+    <div className={` fixed bg-white bottom-0 w-screen flex justify-around items-center p-4 border-t`}>
       <button onClick={() => routeChange("/")}>
         <FiHome className={`icons ${isActive("/") && "text-stone-400"} `} />
       </button>

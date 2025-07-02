@@ -10,7 +10,7 @@ const useUpdateAddress = () => {
     const authState = useSelector((state) => state.auth); // Get current auth state
 
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
     const updateAddress = async (addressId, updatedData) => {
         if (!addressId) {
@@ -29,7 +29,6 @@ const useUpdateAddress = () => {
           city
           state
           zipCode
-          phoneNumber
           landmark
         }
       }
@@ -42,7 +41,6 @@ const useUpdateAddress = () => {
                 city: updatedData.city,
                 state: updatedData.state,
                 postalCode: updatedData.postalCode,
-                phoneNumber: updatedData.phoneNumber,
                 landmark: updatedData.landmark,
             },
         };

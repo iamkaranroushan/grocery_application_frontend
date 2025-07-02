@@ -3,18 +3,21 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Input from "./input";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useLogin from "@/hooks/useLogin";
 import useSignup from "@/hooks/useSignup";
+import useLoginRest from "@/hooks/useLogin2";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
-const FormComponent = ({ className, setIsLoginOpen }) => {
+const FormComponent = ({ className, setIsLoginOpen, setIsLoggedIn }) => {
   const [mode, setMode] = useState("login"); // "login" or "signup"
   const isLogin = mode === "login";
-
-  const { login, loading: loginLoading} = useLogin();
-  const { signup, loading: signupLoading} = useSignup();
+  const { login, loading: loginLoading } = useLoginRest();
+  const { signup, loading: signupLoading } = useSignup();
   const [apiError, setApiError] = useState(null);
-
+  const role = useSelector((state) => state.auth.role);
+  const router = useRouter();
   const schema = z.object({
     name: isLogin ? z.string().optional() : z.string().min(2, "Name is required"),
     email: z.string().email({ message: "Enter a valid email address" }),
@@ -30,6 +33,8 @@ const FormComponent = ({ className, setIsLoginOpen }) => {
     resolver: zodResolver(schema),
   });
 
+
+
   const onSubmit = async (data) => {
     setApiError(null);
     let response;
@@ -44,8 +49,10 @@ const FormComponent = ({ className, setIsLoginOpen }) => {
       setApiError(response.error);
     } else {
       setIsLoginOpen?.(false);
+      reset();
+
+      router.refresh()
     }
-    reset();
   };
 
   return (
@@ -113,8 +120,8 @@ const FormComponent = ({ className, setIsLoginOpen }) => {
               ? "Logging in..."
               : "Login"
             : signupLoading
-            ? "Signing up..."
-            : "Register"}
+              ? "Signing up..."
+              : "Register"}
         </Button>
 
         {apiError && (

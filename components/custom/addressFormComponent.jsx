@@ -19,7 +19,6 @@ const AddressFormComponent = ({ className, onClose, fetchAddressesByUser, existi
         city: z.string().min(2, "City name is too short"),
         state: z.string().min(2, "State name is too short"),
         postalCode: z.string().regex(/^\d{5,6}$/, "Invalid Postal Code"),
-        phoneNumber: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
         landmark: z.string().optional(),
     });
 
@@ -40,7 +39,6 @@ const AddressFormComponent = ({ className, onClose, fetchAddressesByUser, existi
                 city: "",
                 state: "",
                 postalCode: "",
-                phoneNumber: "",
                 landmark: "",
             }
     });
@@ -60,7 +58,7 @@ const AddressFormComponent = ({ className, onClose, fetchAddressesByUser, existi
         console.log(username)
 
         if (!userId) return alert("User ID is required!");
-        
+
         const addressData = {
             ...data,
             userId: parseInt(userId), // Ensure it's a number
@@ -91,7 +89,6 @@ const AddressFormComponent = ({ className, onClose, fetchAddressesByUser, existi
                     { name: "city", label: "City", placeholder: "Bihar" },
                     { name: "state", label: "State", placeholder: "Patna" },
                     { name: "postalCode", label: "Pin code", placeholder: "811215" },
-                    { name: "phoneNumber", label: "Phone no.", placeholder: "7765987123", type: "number" },
                 ].map(({ name, label, placeholder, type = "text" }) => (
                     <div key={name} className="flex flex-col space-y-2">
                         <Controller

@@ -4,7 +4,7 @@ import axios from "axios";
 const useFetchOrderById = (orderId) => {
   console.log(orderId)
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,6 @@ const useFetchOrderById = (orderId) => {
                   city
                   state
                   zipCode
-                  phoneNumber
                 }
                 orderItems {
                   id
@@ -45,6 +44,7 @@ const useFetchOrderById = (orderId) => {
                     id
                     weight
                     product {
+                     imageUrl
                       name
                     }
                   }
@@ -53,9 +53,7 @@ const useFetchOrderById = (orderId) => {
             }
           `,
         },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
       );
 
       if (response.data.errors) {

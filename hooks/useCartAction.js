@@ -6,8 +6,7 @@ const useCartAction = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK || // Use Network URL if available
-        process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
     const updateQuantity = async ({ cartItemId, newQuantity }) => {
         setLoading(true);
         const quantity = newQuantity;
@@ -26,11 +25,7 @@ const useCartAction = () => {
                     `,
                     variables: { cartItemId: parseInt(cartItemId), quantity: parseInt(quantity) },
                 },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
             );
             console.log(response.data.data.updateQuantity.message)
             setUpdatedQuantity(response.data.data.updateQuantity.updatedQuantity);

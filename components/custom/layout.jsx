@@ -8,12 +8,14 @@ import LoadingSpinner from "./loadingSpinner";
 import { Provider } from "react-redux";
 import { store, persistor } from "@/features/auth/authStore";
 import { PersistGate } from "redux-persist/integration/react";
+import { useIsMobile } from "@/hooks/useIsMobile"; // adjust path accordingly
 
 const Layout = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const Router = useRouter();
+  const isMobile = useIsMobile();
 
   const routeChange = (url) => {
     const currentUrl = window.location.pathname + window.location.search;
@@ -42,13 +44,12 @@ const Layout = ({ children }) => {
 
           {/* Main content */}
           <main
-            className={`flex-grow justify-center w-screen my-14   ${loading && "opacity-50"
+            className={`flex-grow justify-center w-full mt-14   ${loading && "opacity-50"
               }`}
           >
             {children}
           </main>
-
-          {<Bottom_navbar routeChange={routeChange} />}
+          {isMobile && <Bottom_navbar routeChange={routeChange} />}
         </div>
       </PersistGate>
     </Provider>

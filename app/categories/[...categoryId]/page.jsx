@@ -33,11 +33,11 @@ const ProductsPage = () => {
         )}
 
         <div
-          className={`mt-16 px-4 ${isLoginOpen ? "blur-sm" : ""
+          className={`mt-6 lg:mt-10 lg:px-20 px-3 ${isLoginOpen ? "blur-sm" : ""
             }`}
         >
           {products.length > 0 ? (
-            <div className="grid grid-cols-2 py-3 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 lg:gap-4 gap-4">
               {products.map((product) => (
                 <ProductCard
                   key={product.id}

@@ -6,8 +6,8 @@ import axios from "axios";
 
 const useLogin = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK || // Use Network URL if available
-    process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL ||
+    process.env.NEXT_PUBLIC_API_URL_NETWORK // Use Network URL if available
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch(); // Get access to dispatch
@@ -57,7 +57,7 @@ const useLogin = () => {
 
       const data = response.data.data.userLogin;
       console.log(data.user.id);
-      
+
       if (data?.error) {
         // If error is returned from the backend
         setError(data?.error);

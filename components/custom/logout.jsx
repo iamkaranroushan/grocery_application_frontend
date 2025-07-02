@@ -4,17 +4,24 @@ import { RxCross1 } from 'react-icons/rx';
 import { CiWarning } from 'react-icons/ci';
 import { logout } from '@/features/auth/authSlice';
 import { useDispatch } from 'react-redux';
+import useLogout from '@/hooks/useLogout';
+import { useRouter } from 'next/navigation';
 
 const Logout = ({ onClose, setIsLogoutOpen }) => {
-    const dispatch = useDispatch();
+    const { performLogout, loading, error } = useLogout();
+    const router = useRouter();
+    const handleLogout = async () => {
+        try {
+            // ✅ Backend logout request
+            await performLogout();
 
-    const handleLogout = () => {
-        dispatch(
-            logout()
-        );
-        setIsLogoutOpen(false);
-        console.log("logging out.")
-    }
+            setIsLogoutOpen(false);
+            console.log("Logged out");
+            router.push("/user");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 h-[100vh]">
             <div className="flex flex-col p-5 gap-4 bg-white rounded-xl shadow-lg w-64 text-center">
@@ -35,6 +42,7 @@ const Logout = ({ onClose, setIsLogoutOpen }) => {
                         Ok
                     </Button>
                     <Button
+                        disabled={loading}
                         variant="cancel"
                         onClick={onClose}
                     >

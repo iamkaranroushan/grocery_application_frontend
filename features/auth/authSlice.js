@@ -7,7 +7,7 @@ const initialState = {
   user: "",
   id:"",
   role: "",
-  email: "",
+  phoneNumber:"",
   cartId: "",
   address:[],
   cartItems: [],
@@ -22,6 +22,7 @@ const authSlice = createSlice({
       state.token = action.payload.token;
       state.user = action.payload.user;
       state.id = action.payload.id;
+      state.phoneNumber = action.payload.phoneNumber;
       state.role = action.payload.role;
       state.email = action.payload.email;
       state.address = action.payload.address;
@@ -35,6 +36,7 @@ const authSlice = createSlice({
       state.role = null;
       state.error = null;
       state.cartId = null;
+      state.phoneNumber = null;
       state.address = null;
       state.cartItems = []
     },

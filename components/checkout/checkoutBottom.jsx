@@ -2,12 +2,12 @@
 import React, { useState } from 'react'
 import { Button } from '../ui/button'
 
-const CheckOutBottom = ({handleOrder}) => {
+const CheckOutBottom = ({handleOrder, isCartEmpty}) => {
     const [paymentMethod, setPaymentMethod] = useState("COD");
     return (
         <div className="flex flex-col bg-white gap-3">
             {/* Payment Method Selection */}
-            <h2 className="font-semibold  mb-2">Select Mode of Payment</h2>
+            <h2 className="lg:font-semibold text-[16px] lg:text-lg text-stone-700  mb-2">Select Mode of Payment</h2>
             <div className="flex flex-col border p-3 rounded-lg gap-3">
                 {/* Cash on Delivery Option */}
                 <label
@@ -54,7 +54,7 @@ const CheckOutBottom = ({handleOrder}) => {
                 </label>
             </div>
             <span className="">
-                <Button onClick={()=>{handleOrder(paymentMethod)}} variant="order" size="order" >{paymentMethod === "COD" ? "Place order" : "Proceed to pay"}</Button>
+                <Button disabled={isCartEmpty}  onClick={()=>{handleOrder(paymentMethod)}} variant="order" size="order" >{paymentMethod === "COD" ? "Place order" : "Proceed to pay"}</Button>
             </span>
         </div>
     )

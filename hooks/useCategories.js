@@ -3,8 +3,8 @@ import axios from "axios";
 
 const useCategories = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_NETWORK ||
-    process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    process.env.NEXT_PUBLIC_API_URL_LOCAL ||
+    process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +36,7 @@ const useCategories = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials:"true"
         }
       );
       setCategories(response.data.data.categories);

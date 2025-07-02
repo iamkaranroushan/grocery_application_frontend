@@ -3,8 +3,7 @@ import axios from 'axios';
 
 const useCreateProduct = () => {
     const API_URL =
-        process.env.NEXT_PUBLIC_API_URL_NETWORK ||
-        process.env.NEXT_PUBLIC_API_URL_LOCAL;
+        process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -41,18 +40,15 @@ const useCreateProduct = () => {
                 variants {
                   weight
                   price
-                  stock
+                  mrp
+                  inStock
                 }
               }
             }
           `,
                     variables: { name, description, categoryId, imageUrl, isActive, variants },
                 },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
             );
 
             if (response.data.errors) {

@@ -3,7 +3,8 @@ import axios from "axios";
 import { useState } from "react";
 
 const useDeleteCartItem = () => {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL_NETWORK || process.env.NEXT_PUBLIC_API_URL_LOCAL;
+    const API_URL = 
+    process.env.NEXT_PUBLIC_API_URL_LOCAL || process.env.NEXT_PUBLIC_API_URL_NETWORK;
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -24,11 +25,7 @@ const useDeleteCartItem = () => {
           `,
                     variables: { cartItemId },
                 },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
+                { headers: { 'Content-Type': 'application/json' }, withCredentials: true, }
             );
 
             return response.data.data.deleteCartItem;

@@ -1,85 +1,122 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import { FcLike } from "react-icons/fc";
-import Input from './input';
-import { FaRegCopyright } from 'react-icons/fa';
-import { Button } from '../ui/button';
+'use client';
+import React, { useState, useEffect } from 'react';
+import { FaAngleDown, FaAngleUp, FaRegCopyright } from 'react-icons/fa';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import LoadingSpinner from './loadingSpinner';
+import { CiGlobe } from 'react-icons/ci';
+
+const sections = [
+  {
+    title: 'Customer Care',
+    links: [
+      { label: 'Contact Us', url: '/contact' },
+    ],
+  },
+  {
+    title: 'Links',
+    links: [
+      { label: 'Your Orders', url: '/orders' },
+      { label: 'Your Cart', url: '/cart' },
+      { label: 'Shop From Categories', url: '/categories' },
+    ],
+  },
+  {
+    title: 'Shop',
+    links: [
+      { label: 'About Us', url: '/about' },
+    ],
+  },
+];
+
+
 const MainFooter = () => {
-    const [loading, setLoading] = useState(false);
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [openSections, setOpenSections] = useState({});
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-    const routeChange = (url) => {
-        const currentUrl = window.location.pathname + window.location.search;
-        if (url !== currentUrl) {
-            setLoading(true);
-            console.log(url);
-            router.push(url, { scroll: false });
-        }
-    };
-    useEffect(() => {
-        setLoading(false); // Cleanup timer when the effect re-runs
-    }, [pathname, searchParams]);
+  const toggleSection = (title) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [title]: !prev[title],
+    }));
+  };
 
-    return (
-        <div>
+  const routeChange = (url) => {
+    const currentUrl = window.location.pathname + window.location.search;
+    if (url !== currentUrl) {
+      setLoading(true);
+      router.push(url, { scroll: false });
+    }
+  };
 
+  useEffect(() => {
+    setLoading(false);
+  }, [pathname, searchParams]);
 
-            {loading &&
-                <div className="fixed inset-0 w-screen flex items-center justify-center  bg-white bg-opacity-60 ">
-                    <LoadingSpinner />
-                </div>
-            }
-            <div className='flex flex-col flex-wrap p-3 bg-black '>
-                <div className='flex flex-col text-white font-semibold mb-4'>
-                    <span className='mb-2'>Easy Grocery</span>
-                    <div className='flex flex-col'>
-                        <span className='text-gray-500 text-sm'>Delivering fresh groceries to your door with quality you can trust.</span>
-                    </div>
-                </div>
-                <div className='flex flex-col text-white font-semibold mb-4'>
-                    <span className='mb-2'>Quick links</span>
-                    <div className='flex flex-col'>
-                        <span onClick={() => { routeChange('/') }} className='text-gray-500 text-sm cursor-pointer'>Home</span>
-                        <span onClick={() => { routeChange('/about') }} className='text-gray-500 text-sm cursor-pointer'>about us</span>
-                        <span onClick={() => { routeChange('/support') }} className='text-gray-500 text-sm cursor-pointer'>contact us</span>
-                        <span onClick={() => { routeChange('/orders') }} className='text-gray-500 text-sm cursor-pointer'>orders</span>
-                        <span onClick={() => { routeChange('/cart') }} className='text-gray-500 text-sm cursor-pointer'>cart</span>
-                    </div>
-                </div>
-
-                <div className='flex justify-between items-end mb-4'>
-                    <span className='text-white/30 text-5xl font-bold'>
-                        HAPPY SHOPPING
-                    </span>
-                    <span className='text-5xl opacity-50 p-2'><FcLike /></span>
-                </div>
-                <div className='flex items-center justify-center'>
-
-                    <span className='text-gray-500 text-xs'>© {new Date().getFullYear()} Easy Grocery. All rights reserved</span>
-                </div>
-            </div>
+  return (
+    <>
+      {loading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-60">
+          <LoadingSpinner />
         </div>
-    )
-}
+      )}
 
-export default MainFooter
+      <footer className="bg-[#111] text-white px-4 lg:px-20 lg:pt-20 lg:pb-10 pt-10 pb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {sections.map((section) => (
+            <div key={section.title} className="border-b lg:border-none border-gray-700 pb-6 lg:pb-0">
+              <button
+                onClick={() => toggleSection(section.title)}
+                className="w-full flex justify-between items-center text-left font-semibold text-white text-sm lg:cursor-default lg:pointer-events-none"
+              >
+                {section.title}
+                <span className="lg:hidden">
+                  {openSections[section.title] ? <FaAngleUp /> : <FaAngleDown />}
+                </span>
+              </button>
 
-
-{/*
-    <div className='flex flex-col text-white font-semibold mb-4'>
-                <span className='mb-2' >subscribe</span>
-                <span className='text-gray-500 text-sm mb-2' >Get updates on new products and offers.</span>
-                <div className='flex justify-around items-center'>
-                    <Input
-                        type="text"
-                        placeholder="email"
-                        className="p-3 placeholder:text-sm placeholder:text-stone-400 rounded-lg border focus:border-stone-400 focus:outline-none"
-                    />
-                    <Button variant='subscribe' size='subscribe'>Subscribe</Button>
-                </div>
+              {(openSections[section.title] || typeof window !== 'undefined' && window.innerWidth >= 1024) && (
+                <ul className="mt-6 space-y-2 text-sm text-gray-400 lg:mt-4">
+                  {section.links.map((link, index) => (
+                    <li
+                      key={index}
+                      className="hover:text-white cursor-pointer"
+                      onClick={() => routeChange(link.url)}
+                    >
+                      {link.label}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-             */}
+          ))}
+        </div>
+
+        <div className="flex items-center text-sm text-gray-500 my-6">
+          <span className="mr-2">
+            <CiGlobe className="text-gray-500" />
+          </span>
+          India
+        </div>
+
+        <div className="border-t border-gray-700 pt-4 text-xs text-gray-500 space-y-2">
+          <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+            <span className="flex items-center gap-1 mb-2 sm:mb-0">
+              <FaRegCopyright className="text-[10px]" />
+              {new Date().getFullYear()} Easy Grocery. All rights reserved.
+            </span>
+            <div className="flex gap-4 flex-wrap">
+              <span className="cursor-pointer hover:text-white">Terms of Sale</span>
+              <span className="cursor-pointer hover:text-white">Terms of Use</span>
+              <span className="cursor-pointer hover:text-white">Privacy Policy</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </>
+  );
+};
+
+export default MainFooter;
