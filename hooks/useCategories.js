@@ -3,9 +3,7 @@ import axios from "axios";
 
 const useCategories = () => {
   const API_URL =
-    process.env.NEXT_PUBLIC_API_URL_LOCAL ||
-    process.env.NEXT_PUBLIC_API_URL_NETWORK;
-
+    process.env.NEXT_PUBLIC_API_URL_LOCAL 
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
