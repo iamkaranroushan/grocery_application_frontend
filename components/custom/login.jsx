@@ -84,7 +84,7 @@ const Login = ({ onClose }) => {
         { idToken },
         { withCredentials: true }
       );
-
+      console.log(response);
       // ✅ Remove reCAPTCHA badge after login
       const badge = document.querySelector(".grecaptcha-badge");
       if (badge) badge.remove();
