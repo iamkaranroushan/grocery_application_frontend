@@ -5,7 +5,7 @@ import { IoClose } from "react-icons/io5";
 import { MdArrowBackIosNew } from "react-icons/md";
 import useSendOtp from "@/hooks/useSendOtp";
 
-const OtpVerificationModal = ({ onClose, phoneNumber, onVerify, onBack, isOtpSent, loading, setLoading, firebaseErrors, setFirebaseErrors }) => {
+const OtpVerificationModal = ({ onClose, phoneNumber, onVerify, onBack, isOtpSent,  firebaseErrors, setFirebaseErrors }) => {
     const [otpTimer, setOtpTimer] = useState(300); // 5 minutes = 300 seconds
     const [resendCooldown, setResendCooldown] = useState(0);
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);

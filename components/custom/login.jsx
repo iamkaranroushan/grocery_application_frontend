@@ -84,15 +84,18 @@ const Login = ({ onClose }) => {
         { idToken },
         { withCredentials: true }
       );
-      console.log(response);
+
       // ✅ Remove reCAPTCHA badge after login
       const badge = document.querySelector(".grecaptcha-badge");
       if (badge) badge.remove();
 
-      setLoading(false);
+
       const data = response.data;
+      console.log(data);
 
       if (data?.token) {
+        console.log("data ready for redux store")
+
         dispatch(
           setAuth({
             token: data.token,
@@ -105,9 +108,12 @@ const Login = ({ onClose }) => {
           })
         );
 
-        onClose();
-        router.refresh();
+        console.log("data added to redux store")
       }
+
+      console.log("closing modal")
+      onClose();
+      router.refresh();
     } catch (err) {
       if (err.code === "auth/invalid-verification-code") {
         setFirebaseErrors("Incorrect otp");
@@ -143,7 +149,7 @@ const Login = ({ onClose }) => {
           phoneNumber={phoneNumber}
           onVerify={onVerify}
           isOtpSent={isOtpSent}
-          setLoading={setLoading}
+
           firebaseErrors={firebaseErrors}
           setFirebaseErrors={setFirebaseErrors}
           loading={loading}

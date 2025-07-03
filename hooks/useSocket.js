@@ -15,9 +15,9 @@ const useSocket = () => {
 
             const socketUrl =
 
-                process.env.NEXT_PUBLIC_SOCKET_URL ||
-                "http://localhost:8000" ||
-                "http://192.168.1.3:8000"
+                process.env.NEXT_PUBLIC_API_URL_LOCAL_SOCKET ||
+                process.env.NEXT_PUBLIC_API_URL_NETWORK_SOCKET ||
+                process.env.NEXT_PUBLIC_SOCKET_URL
             const newSocket = io(socketUrl, {
                 auth: {
                     token: token,
