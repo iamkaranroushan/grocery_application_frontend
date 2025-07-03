@@ -17,7 +17,7 @@ const getJwtSecretKey = () => {
 export async function middleware(request) {
     const { pathname } = request.nextUrl
     const jwtToken = request.cookies.get('jwtToken')?.value
-
+    console.log(jwtToken)
     if (!jwtToken) {
         console.log('[Middleware] No jwtToken found')
         return NextResponse.next()
