@@ -16,6 +16,8 @@ export async function middleware(request) {
       },
     });
 
+    console.log(res.json());
+
     if (res.ok) {
       const data = await res.json();
       role = data.role;
