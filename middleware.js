@@ -9,6 +9,8 @@ export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   let role = null;
 
+  console.log('[Middleware] Cookie from request:', request.headers.get('cookie'));
+
   try {
     const res = await fetch(`${request.nextUrl.origin}/api/auth/verify`, {
       headers: {
@@ -16,10 +18,10 @@ export async function middleware(request) {
       },
     });
 
-    console.log(res.json());
 
     if (res.ok) {
       const data = await res.json();
+      console.log('[Middleware] Response from /api/auth/verify:', data);
       role = data.role;
       console.log('[Middleware] Role:', role);
     } else {
