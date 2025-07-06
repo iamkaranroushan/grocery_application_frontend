@@ -1,34 +1,29 @@
 import { NextResponse } from 'next/server';
+import { jwtVerify } from 'jose'; // you'll use `jose` to verify JWT
 
 const protectedRoutes = {
   admin: ['/admin', '/admin/edit', '/admin/dashboard'],
   customer: ['/user', '/cart', '/orders', '/checkout'],
-}
+};
+
+// Replace this with your actual secret used to sign the JWT
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET); // store in .env
 
 export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   let role = null;
 
-  console.log('[Middleware] Cookie from request:', request.headers.get('cookie'));
+  const token = request.cookies.get('jwtToken')?.value;
+  console.log('[Middleware] jwtToken:', token);
 
-  try {
-    const res = await fetch(`${request.nextUrl.origin}/api/auth/verify`, {
-      headers: {
-        cookie: request.headers.get('cookie') || '',
-      },
-    });
-
-
-    if (res.ok) {
-      const data = await res.json();
-      console.log('[Middleware] Response from /api/auth/verify:', data);
-      role = data.role;
-      console.log('[Middleware] Role:', role);
-    } else {
-      console.log('[Middleware] No Role available.', res.status);
+  if (token) {
+    try {
+      const { payload } = await jwtVerify(token, JWT_SECRET);
+      role = payload.role;
+      console.log('[Middleware] Decoded Role:', role);
+    } catch (err) {
+      console.error('[Middleware] Invalid token:', err);
     }
-  } catch (err) {
-    console.error('[Middleware] Fetch error:', err);
   }
 
   if (!role) {
@@ -60,4 +55,4 @@ export const config = {
     '/orders',
     '/checkout',
   ],
-}
+};
