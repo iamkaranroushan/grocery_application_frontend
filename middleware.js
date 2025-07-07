@@ -13,6 +13,7 @@ export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   let role = null;
   console.log(request);
+  console.log(request.cookies);
 
   const token = request.cookies.get('jwtToken')?.value;
   console.log('[Middleware] jwtToken:', token);
