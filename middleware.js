@@ -12,6 +12,7 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET); // store in
 export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   let role = null;
+  console.log(request.cookie);
 
   const token = request.cookies.get('jwtToken')?.value;
   console.log('[Middleware] jwtToken:', token);
