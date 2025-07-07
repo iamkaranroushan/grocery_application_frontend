@@ -79,12 +79,11 @@ const Login = ({ onClose }) => {
       console.log(otpCode);
       const userCredential = await confirmationResult.confirm(otpCode);
       const idToken = await userCredential.user.getIdToken();
-      const response = await fetch(`${API_URL}/auth/verify-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
-        credentials: 'include', // ✅ critical
-      });
+      const response = await axios.post(
+        `${API_URL}/verify-otp`,
+        { idToken },
+        { withCredentials: true }
+      );
 
       // ✅ Remove reCAPTCHA badge after login
       const badge = document.querySelector(".grecaptcha-badge");
