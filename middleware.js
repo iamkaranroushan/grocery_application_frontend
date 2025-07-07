@@ -21,10 +21,12 @@ export async function middleware(request) {
   console.log('[Middleware] jwtToken:', token);
 
 
-  console.log("[Middleware] Available Cookies:");
-  for (const [key, value] of request.cookies.entries()) {
-    console.log(`${key}: ${value}`);
-  }
+  // console.log("[Middleware] Available Cookies:");
+  // for (const [key, value] of request.cookies.entries()) {
+  //   console.log(`${key}: ${value}`);
+  // }
+
+
   if (token) {
     try {
       const { payload } = await jwtVerify(token, JWT_SECRET);
