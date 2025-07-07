@@ -27,7 +27,7 @@ export async function middleware(request) {
   }
 
   if (!role) {
-    return NextResponse.next();
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   if (
